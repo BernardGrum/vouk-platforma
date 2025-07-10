@@ -30,13 +30,14 @@ import SrzProblema from './pages/SrzProblema.jsx';
 import ZastoNeBanka from './pages/ZastoNeBanka.jsx';
 import DodavanjeDokaza from './pages/DodavanjeDokaza.jsx';
 import PrijavaUspjesna from './pages/PrijavaUspjesna.jsx';
-import PrijavaPoduzetnik from './pages/PrijavaPoduzetnik.jsx'; // NOVI UVOZ
+import PrijavaPoduzetnik from './pages/PrijavaPoduzetnik.jsx';
 
 // Uvoz stranica za admina
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
-import OdobravanjeProjekata from './pages/admin/OdobravanjeProjekata.jsx'; // NOVI UVOZ
-import UpravljanjeKorisnicima from './pages/admin/UpravljanjeKorisnicima.jsx'; // NOVI UVOZ
-import SigurnosnaPloca from './pages/admin/SigurnosnaPloca.jsx'; // NOVI UVOZ
+import OdobravanjeProjekata from './pages/admin/OdobravanjeProjekata.jsx';
+import UpravljanjeKorisnicima from './pages/admin/UpravljanjeKorisnicima.jsx';
+import SigurnosnaPloca from './pages/admin/SigurnosnaPloca.jsx';
+
 
 // Kreiranje routera sa svim rutama
 const router = createBrowserRouter([
@@ -66,7 +67,7 @@ const router = createBrowserRouter([
       { path: "/uvjeti-brzi-kredit", element: <UvjetiBrziKredit /> },
       { path: "/srz-problema", element: <SrzProblema /> },
       { path: "/zasto-ne-banka", element: <ZastoNeBanka /> },
-      { path: "/prijava-poduzetnik", element: <PrijavaPoduzetnik /> }, // NOVA RUTA
+      { path: "/prijava-poduzetnik", element: <PrijavaPoduzetnik /> },
       { path: "/dokazi-i-zavrsetak", element: <DodavanjeDokaza /> },
       { path: "/prijava-uspjesna", element: <PrijavaUspjesna /> },
     ]
@@ -79,8 +80,7 @@ const router = createBrowserRouter([
         { index: true, element: <AdminDashboard /> },
         { path: "odobravanje", element: <OdobravanjeProjekata /> },
         { path: "korisnici", element: <UpravljanjeKorisnicima /> },
-        { path: "sigurnost", element: <SigurnosnaPloca /> } // NOVO
-        // Ovdje ćemo dodavati ostale admin stranice (npr. /admin/projekti)
+        { path: "sigurnost", element: <SigurnosnaPloca /> },
     ]
   }
 ]);

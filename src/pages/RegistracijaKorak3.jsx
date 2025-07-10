@@ -1,10 +1,10 @@
 // src/pages/RegistracijaKorak3.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
-import { clsx } from 'clsx'; // Koristimo clsx za lakše slaganje klasa
+import { clsx } from 'clsx';
 
-// Definicija ikona kao React komponenti radi lakšeg korištenja
+// Ikone ostanejo enake...
 const Icons = {
   Proizvodnja: () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>,
   Tehnologija: () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>,
@@ -13,39 +13,38 @@ const Icons = {
   Hipoteka: () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>,
   Zadužnica: () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>,
 };
-
-// Podaci koje ćemo prikazati, sada s ikonama
-const industries = [
-  { naziv: "Proizvodnja", ikona: <Icons.Proizvodnja /> },
-  { naziv: "IT & Tehnologija", ikona: <Icons.Tehnologija /> },
-  { naziv: "Turizam", ikona: <Icons.Turizam /> },
-  { naziv: "Građevinarstvo", ikona: <Icons.Građevinarstvo /> },
-];
-
-const collaterals = [
-    { naziv: "Hipoteka", ikona: <Icons.Hipoteka /> },
-    { naziv: "Zadužnica", ikona: <Icons.Zadužnica /> },
-];
+const industries = [ { naziv: "Proizvodnja", ikona: <Icons.Proizvodnja /> }, { naziv: "IT & Tehnologija", ikona: <Icons.Tehnologija /> }, { naziv: "Turizam", ikona: <Icons.Turizam /> }, { naziv: "Građevinarstvo", ikona: <Icons.Građevinarstvo /> },];
+const collaterals = [ { naziv: "Hipoteka", ikona: <Icons.Hipoteka /> }, { naziv: "Zadužnica", ikona: <Icons.Zadužnica /> },];
 
 function RegistracijaKorak3() {
   const navigate = useNavigate();
-  
-  // NOVO: Stanje za praćenje odabranih stavki
   const [odabraneIndustrije, setOdabraneIndustrije] = useState([]);
   const [odabraniIznos, setOdabraniIznos] = useState(150000);
   const [odabranaOsiguranja, setOdabranaOsiguranja] = useState([]);
+  // NOVO: Stanje za preverjanje veljavnosti forme
+  const [formaJeValidna, setFormaJeValidna] = useState(false);
 
-  // NOVO: Funkcija za rukovanje odabirom
+  // NOVO: useEffect za preverjanje veljavnosti
+  useEffect(() => {
+    if (odabraneIndustrije.length > 0 && odabranaOsiguranja.length > 0) {
+      setFormaJeValidna(true);
+    } else {
+      setFormaJeValidna(false);
+    }
+  }, [odabraneIndustrije, odabranaOsiguranja]);
+
   const handleOdabir = (kolekcija, setKolekcija, vrijednost) => {
     if (kolekcija.includes(vrijednost)) {
-      setKolekcija(kolekcija.filter(item => item !== vrijednost)); // Poništi odabir
+      setKolekcija(kolekcija.filter(item => item !== vrijednost));
     } else {
-      setKolekcija([...kolekcija, vrijednost]); // Dodaj u odabir
+      setKolekcija([...kolekcija, vrijednost]);
     }
   };
 
   const handleFinish = () => {
-    navigate('/verifikacija-emaila');
+    if(formaJeValidna) {
+        navigate('/verifikacija-emaila');
+    }
   };
 
   return (
@@ -57,28 +56,17 @@ function RegistracijaKorak3() {
       <div className="bg-white p-8 rounded-xl shadow-lg border-neutral-200 w-full max-w-2xl">
         <h2 className="text-3xl font-bold text-center text-neutral-800 mb-8">Pomozite nam pronaći prave prilike za vas</h2>
         <div className="space-y-8">
-          
           <div>
             <h3 className="font-bold text-lg text-neutral-700 mb-3">U koje industrije najradije ulažete?</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {industries.map(item => (
-                <button 
-                  key={item.naziv}
-                  onClick={() => handleOdabir(odabraneIndustrije, setOdabraneIndustrije, item.naziv)}
-                  className={clsx(
-                    "flex flex-col items-center justify-center p-4 border-2 rounded-lg transition-all duration-200",
-                    odabraneIndustrije.includes(item.naziv) 
-                      ? 'bg-primary-500 border-primary-600 text-white' // Stil kada je odabrano
-                      : 'bg-neutral-100 border-neutral-200 text-neutral-700 hover:border-primary-500' // Stil kada nije odabrano
-                  )}
-                >
+                <button key={item.naziv} onClick={() => handleOdabir(odabraneIndustrije, setOdabraneIndustrije, item.naziv)} className={clsx("flex flex-col items-center justify-center p-4 border-2 rounded-lg transition-all duration-200", odabraneIndustrije.includes(item.naziv) ? 'bg-primary-500 border-primary-600 text-white' : 'bg-neutral-100 border-neutral-200 text-neutral-700 hover:border-primary-500')}>
                   {item.ikona}
                   <span className="font-semibold">{item.naziv}</span>
                 </button>
               ))}
             </div>
           </div>
-          
           <div>
             <h3 className="font-bold text-lg text-neutral-700 mb-3">Koji je vaš tipičan iznos ulaganja po projektu?</h3>
             <input type="range" min="10000" max="500000" step="10000" value={odabraniIznos} onChange={(e) => setOdabraniIznos(e.target.value)} className="w-full h-2 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-primary-600" />
@@ -88,30 +76,20 @@ function RegistracijaKorak3() {
               <span>500.000 €</span>
             </div>
           </div>
-          
           <div>
             <h3 className="font-bold text-lg text-neutral-700 mb-3">Koja su osiguranja za vas ključna?</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {collaterals.map(item => (
-                <button 
-                  key={item.naziv}
-                  onClick={() => handleOdabir(odabranaOsiguranja, setOdabranaOsiguranja, item.naziv)}
-                  className={clsx(
-                    "flex flex-col items-center justify-center p-4 border-2 rounded-lg transition-all duration-200",
-                    odabranaOsiguranja.includes(item.naziv) 
-                      ? 'bg-primary-500 border-primary-600 text-white'
-                      : 'bg-neutral-100 border-neutral-200 text-neutral-700 hover:border-primary-500'
-                  )}
-                >
+                <button key={item.naziv} onClick={() => handleOdabir(odabranaOsiguranja, setOdabranaOsiguranja, item.naziv)} className={clsx("flex flex-col items-center justify-center p-4 border-2 rounded-lg transition-all duration-200", odabranaOsiguranja.includes(item.naziv) ? 'bg-primary-500 border-primary-600 text-white' : 'bg-neutral-100 border-neutral-200 text-neutral-700 hover:border-primary-500')}>
                   {item.ikona}
                   <span className="font-semibold">{item.naziv}</span>
                 </button>
               ))}
             </div>
           </div>
-          
           <div className="pt-6 border-t border-neutral-200">
-            <Button onClick={handleFinish} variant="primary" className="w-full">
+            {/* NOVO: Gumb je sedaj pravilno onemogočen */}
+            <Button onClick={handleFinish} variant="primary" className="w-full" disabled={!formaJeValidna}>
               Završi registraciju
             </Button>
           </div>

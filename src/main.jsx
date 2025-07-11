@@ -3,6 +3,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
+// NOVO: Uvozimo naš RegistrationProvider
+import { RegistrationProvider } from './context/RegistrationContext.jsx';
+
 // Glavni layouti
 import App from './App.jsx';
 import AdminLayout from './layouts/AdminLayout.jsx';
@@ -10,7 +13,7 @@ import AdminLayout from './layouts/AdminLayout.jsx';
 // CSS
 import './index.css';
 
-// Uvoz svih stranica za korisnike
+// Uvoz vseh strani (ostane nespremenjeno)
 import PocetnaStranica from './pages/PocetnaStranica.jsx';
 import RegistracijaKorak1 from './pages/RegistracijaKorak1.jsx';
 import RegistracijaKorak2 from './pages/RegistracijaKorak2.jsx';
@@ -31,38 +34,33 @@ import ZastoNeBanka from './pages/ZastoNeBanka.jsx';
 import DodavanjeDokaza from './pages/DodavanjeDokaza.jsx';
 import PrijavaUspjesna from './pages/PrijavaUspjesna.jsx';
 import PrijavaPoduzetnik from './pages/PrijavaPoduzetnik.jsx';
-
-// Uvoz stranica za admina
 import AdminDashboard from './pages/admin/AdminDashboard.jsx';
 import OdobravanjeProjekata from './pages/admin/OdobravanjeProjekata.jsx';
 import UpravljanjeKorisnicima from './pages/admin/UpravljanjeKorisnicima.jsx';
 import SigurnosnaPloca from './pages/admin/SigurnosnaPloca.jsx';
 
 
-// Kreiranje routera sa svim rutama
+// Definicija routerja (ostane nespremenjena)
 const router = createBrowserRouter([
   {
-    // Rute za javni dio aplikacije (koristi App.jsx kao layout)
     path: "/",
     element: <App />,
     children: [
       { index: true, element: <PocetnaStranica /> },
-      // Rute za registraciju
+      // ... vse ostale javne poti
       { path: "/registracija", element: <RegistracijaKorak1 /> },
       { path: "/registracija-korak2", element: <RegistracijaKorak2 /> },
-      { path: "/registracija-korak3", element: <RegistracijaKorak3 /> }, // Za kreditore
-      { path: "/registracija-vlasnistvo", element: <RegistracijaVlasnistvo /> }, // Za vlasnike
+      { path: "/registracija-korak3", element: <RegistracijaKorak3 /> },
+      { path: "/registracija-vlasnistvo", element: <RegistracijaVlasnistvo /> },
       { path: "/verifikacija-emaila", element: <VerifikacijaEmaila /> },
-      // Rute za investitore
       { path: "/prilike", element: <PrilikeDashboard /> },
       { path: "/prilike/:projektId", element: <DetaljiProjekta /> },
       { path: "/prilike-za-rast", element: <PrilikeZaRast /> },
-      { path: "/prilike-za-rast/:projektId", element: <DetaljiVlasnistvo /> },
-      // Rute za upravljanje ponudama
+      // Popravek poti za VlasnickiProjectCard
+      { path: "/prilike-rast/:projektId", element: <DetaljiVlasnistvo /> }, 
       { path: "/moje-ponude", element: <MojePonude /> },
       { path: "/kreiraj-ponudu", element: <KreirajPonudu /> },
       { path: "/moje-ponude/:ponudaId/prijave", element: <PrijaveNaPonudu /> },
-      // Rute za prijavu financiranja
       { path: "/prijava-financiranja", element: <PrijavaFinanciranja1 /> },
       { path: "/uvjeti-brzi-kredit", element: <UvjetiBrziKredit /> },
       { path: "/srz-problema", element: <SrzProblema /> },
@@ -73,7 +71,6 @@ const router = createBrowserRouter([
     ]
   },
   {
-    // Rute za administratorski dio aplikacije (koristi AdminLayout.jsx)
     path: "/admin",
     element: <AdminLayout />,
     children: [
@@ -85,8 +82,12 @@ const router = createBrowserRouter([
   }
 ]);
 
+// Renderiranje aplikacije
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    {/* NOVO: Ovijemo RouterProvider z našim kontekstom */}
+    <RegistrationProvider>
+      <RouterProvider router={router} />
+    </RegistrationProvider>
   </React.StrictMode>,
 );
